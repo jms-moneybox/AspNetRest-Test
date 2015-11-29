@@ -1,5 +1,7 @@
-﻿using Moneybox.Transactions.Interface;
+﻿using Moneybox.Transactions.Data.Repository;
+using Moneybox.Transactions.Interface;
 using Moneybox.Transactions.Model;
+using Moneybox.Transactions.Service;
 using System;
 using System.Collections.Generic;
 using System.Web.Http;
@@ -10,9 +12,13 @@ namespace Moneybox.Web.Api.Controllers
     {
         private readonly ITransactionService _transactionService;
 
+        public TransactionsController():this(new TransactionService(new TransactionRepository(new Transactions.Data.TransactionsDbContext("moneybox"))))
+        {
+            // todo : remove this once dependency injection is set up            
+        }
+
         public TransactionsController(ITransactionService transactionService)
         {
-            if(transactionService == null) { throw new ArgumentNullException("transactionService"); }
             _transactionService = transactionService;
         }
                  
@@ -26,9 +32,10 @@ namespace Moneybox.Web.Api.Controllers
             return _transactionService.GetById(id);
         }
          
-        public void Post([FromBody]Transaction transaction)
+        public Transaction Post([FromBody]Transaction transaction)
         {
             _transactionService.Create(transaction);
+            return transaction;
         }
          
         public void Put(long id, [FromBody]Transaction transaction)
