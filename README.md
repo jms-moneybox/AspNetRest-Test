@@ -1,51 +1,52 @@
-# Create a simple REST API using ASP.NET
+# Task : Create a simple REST API using ASP.NET
 
-### The Brief:
+## Summary 
 
-##### Time 0.5 - 2 hours
+The solution has been built using WebApi to provide a RESTful API and SQL Lite & Dapper to provide a persitent data access layer. Sql lite has been configured to create a db in c:\Temp\ which may require permissions. No other configuration should be required.
 
-Create a working RESTful API using ASP.NET, the API you will create will allow the consumer of the API to save, update and get transactions. Auth is considered out of scope for this test.
+I decided not to use sql server because of the possible requirements to get this running, however I had not used SQL Lite before, so it ended up consuming more time than expected. I chose dapper with dapper extensions over entity framework because of the potential simplicity. Unfortunately dapper and dapper extensions did not play well with SQL Lite so a simple task ended up taking a bit longer (but it was good to learn). On reflection, I could easily have built an in memory repository, but felt this would not satisfy requirement 3, while using SQL server EF may have compromised requirement 1.
 
-A transaction is represented as follows:
-```cs
-        public long TransactionId { get; set; }
-        public DateTime TransactionDate { get; set; }
-        public string Description { get; set; }
-        public decimal TransactionAmount { get; set; }
-        public DateTime CreatedDate { get; set; }        
-        public DateTime ModifiedDate { get; set; }
-        public string CurrencyCode { get; set; }
-        public string Merchant { get; set; }
-```
->  **Merchant and Description are optional**
+I have also split the solution out into seperate projects to display how the code should be isolated. While this is not strictly the simplest solution, I felt it was worthwhile to show best practise.
+ 
+### Debugging
 
-What you can use is pretty open (use whatever frameworks you are comfortable with) but it has to use ASP.NET and meet the following criteria (order of importance).
+To Debug the solution, simply run the web.api project either from visual studio or iis.
 
-1. **Your solution must compile and run first time** using Visual Studio 2013/2015, we shouldn't have to add any additional config etc (feel to add any instructions in the readme).
+### REST Api Endpoints
+A Postman script has been included in the root of this repository to facilitate executing the requests detailed below.
 
-2. The solution should be as simple as possible. More weight is given to the solution with the **least complexity**. 
+#### Create Transaction
+> POST /api/transactions
+ 
+####  Update Transaction.
+> PUT /api/transactions/{transactionId}
 
-3. Transactions must be stored - you can use anything you like to achieve this, but consider the importance 1 & 2 in your solution. 
+#### Delete Transaction
+> DELETE /api/transactions/{transactionId}
 
-4. The API must have an endpoint to create a new transaction.
+#### Get Transaction
+> GET /api/transactions/{transactionId}
 
-5. The API must have an endpoint to update a transaction.
+#### Get All Transactions
+> GET /api/transactions
 
-6.  The API must have an endpoint to delete a transaction.
+### Tests
+Some unit tests have been written against the API controllers using MsTest and MOQ. The repository layer is mocked out to avoid writing to the db when testing.
+I have used MSTest over Nunit to ensure that they can be run on any machine.
 
-7. The API must have an endpoint to get a transaction.
+Further improvements to the tests would include a full integration test suite that called the hosted api.
 
-8. The API must have an endpoint to get a list of all transactions.
+### Time & Improvements
+I spent around 2 hours on this, though setting up SQL Lite was a time drain and using an in memory repository or EF would have reduced the effort. 
 
-9. Your solution should contain tests, again how you do this is left up to you - unit, integration, acceptance etc. You can add more than one test project to demonstrate different test techniques for example integration / unit.
+I didnt get around to setting up a dependency injection framework.
 
-##### How to Submit your test to us:
- - Fork this repository
-	- Create your solution in your repository
-	- When you're happy, [create a pull request](https://help.github.com/articles/creating-a-pull-request/)
- - Provide a readme which details:
-     - a short description of your API what have used, debugging instructions (*don't forget point 1*) any comments you wish to add
-     - The time you spent on the project.
-     - If you ran out of time, but would have liked to implemented certain features, tell us why
+Things that could be added given the time include : 
+- DI Framework
+- Logging
+- Validation
+- Error Handling
+- Message Envelopes
+- Async actions
 
-GOOD LUCK :smile:
+
